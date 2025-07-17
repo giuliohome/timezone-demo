@@ -16,6 +16,20 @@ This demo shows the **correct** way to handle timezone testing in Selenium witho
 - Works with both local Chrome and Selenium Grid
 - Demonstrates real timezone behavior in web applications
 
+## Service Architecture
+
+The demo is split into separate services for better control:
+
+- **`demo-app`** - The web application (runs continuously on port 3000)
+- **`demo-tests`** - The Selenium tests (runs once and exits)
+- **`selenium-hub`** - Selenium Grid hub
+- **`chrome-node`** - Chrome browser node for Selenium
+
+This separation allows you to:
+- Run the app independently for manual testing
+- Run tests separately against a running app
+- Develop and test iteratively without restarting everything
+
 ## Running the Demo
 
 ### Prerequisites
@@ -26,28 +40,42 @@ This demo shows the **correct** way to handle timezone testing in Selenium witho
 
 1. **Clone/create the project structure** with all the files above
 
-2. **Run the complete demo:**
+2. **Run the demo app only:**
    ```bash
-   docker-compose up --build
+   docker-compose up demo-app
    ```
 
 3. **View the demo app** at http://localhost:3000
 
-4. **Tests will run automatically** and show results in the console
+4. **Run tests separately (in another terminal):**
+   ```bash
+   docker-compose --profile testing up demo-tests
+   ```
+
+5. **Run everything together (app + tests):**
+   ```bash
+   docker-compose --profile testing up
+   ```
 
 ### Manual Testing
 
 You can also run individual components:
 
 ```bash
-# Run just the demo app
+# Run just the demo app (stays running)
 docker-compose up demo-app
 
 # Run just Selenium Grid
 docker-compose up selenium-hub chrome-node
 
-# Run tests separately
-docker-compose exec demo-app npm test
+# Run tests against running app
+docker-compose --profile testing up demo-tests
+
+# Run tests in one-shot mode
+docker-compose run --rm demo-tests
+
+# Run everything including tests
+docker-compose --profile testing up --build
 ```
 
 ## Key Points for Your Colleague
@@ -103,6 +131,10 @@ The tests show real timezone functionality working perfectly:
 
 4. **Docker Compose version warning**:
    - Remove the `version:` line from `docker-compose.yml` (it's obsolete in newer versions)
+
+5. **Tests not running**:
+   - Use `--profile testing` to include test services
+   - Make sure the demo app is running first: `docker-compose up demo-app`
 
 ## Files Included
 
