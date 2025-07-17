@@ -1,0 +1,43 @@
+services:
+  selenium-hub:
+    image: selenium/hub:4.15.0
+    ports:
+      - "4444:4444"
+      - "4442:4442"  # Event bus
+      - "4443:4443"  # Event bus
+    environment:
+      - GRID_MAX_SESSION=4
+      - GRID_BROWSER_TIMEOUT=300
+      - GRID_TIMEOUT=300
+
+  chrome-node:
+    image: selenium/node-chrome:4.15.0
+    depends_on:
+      - selenium-hub
+    environment:
+      - HUB_HOST=selenium-hub
+      - HUB_PORT=4444
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - NODE_MAX_INSTANCES=2
+      - NODE_MAX_SESSION=2
+    volumes:
+      - /dev/shm:/dev/shm
+    ports:
+      - "5900:5900"
+
+  demo-app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - selenium-hub
+      - chrome-node
+    environment:
+      - SELENIUM_HUB_URL=http://selenium-hub:4444/wd/hub
+      - APP_URL=http://demo-app:3000
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: sh -c "npm start & sleep 15 && npm test"

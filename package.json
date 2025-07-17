@@ -1,0 +1,19 @@
+{
+  "name": "timezone-selenium-demo",
+  "version": "1.0.0",
+  "description": "Demo showing correct timezone handling in Selenium tests",
+  "scripts": {
+    "start": "node demo-app/server.js",
+    "test": "jest tests/timezone.test.js --detectOpenHandles --forceExit"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "selenium-webdriver": "^4.15.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "testTimeout": 30000
+  }
+}
