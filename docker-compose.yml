@@ -22,10 +22,13 @@ services:
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
       - NODE_MAX_INSTANCES=2
       - NODE_MAX_SESSION=2
+      # Enable remote debugging for Edge browsers
+      - SE_NODE_EDGE_OPTIONS="--remote-debugging-port=9222 --remote-allow-origins=*"
     volumes:
       - /dev/shm:/dev/shm
     ports:
       - "5900:5900"
+      - "9222:9222"  # Expose debugging port
 
   demo-app:
     build: .
