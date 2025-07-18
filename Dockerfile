@@ -2,7 +2,7 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Install Chrome for local testing (optional)
+# Install Chromium for local testing (optional - Edge runs in separate container)
 RUN apk add --no-cache \
     chromium \
     nss \
@@ -12,7 +12,7 @@ RUN apk add --no-cache \
     ca-certificates \
     ttf-freefont
 
-# Set Chrome path
+# Set browser paths (for local testing if needed)
 ENV CHROME_BIN=/usr/bin/chromium-browser
 ENV CHROME_PATH=/usr/bin/chromium-browser
 

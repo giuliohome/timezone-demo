@@ -1,6 +1,6 @@
-# Timezone Demo - Correct Way to Handle Timezones in Selenium
+# Timezone Demo - Correct Way to Handle Timezones in Selenium (Edge Edition)
 
-This demo shows the **correct** way to handle timezone testing in Selenium without modifying infrastructure.
+This demo shows the **correct** way to handle timezone testing in Selenium without modifying infrastructure, using Microsoft Edge browser.
 
 ## Why This Approach is Better
 
@@ -11,9 +11,9 @@ This demo shows the **correct** way to handle timezone testing in Selenium witho
 
 ## How It Works
 
-- Uses Chrome DevTools Protocol (CDP) to override browser timezone
+- Uses Chrome DevTools Protocol (CDP) to override browser timezone (works with Edge too!)
 - Fallback to JavaScript injection for compatibility
-- Works with both local Chrome and Selenium Grid
+- Works with both local Edge and Selenium Grid
 - Demonstrates real timezone behavior in web applications
 
 ## Service Architecture
@@ -23,7 +23,7 @@ The demo is split into separate services for better control:
 - **`demo-app`** - The web application (runs continuously on port 3000)
 - **`demo-tests`** - The Selenium tests (runs once and exits)
 - **`selenium-hub`** - Selenium Grid hub
-- **`chrome-node`** - Chrome browser node for Selenium
+- **`edge-node`** - Microsoft Edge browser node for Selenium
 
 This separation allows you to:
 - Run the app independently for manual testing
@@ -66,7 +66,7 @@ You can also run individual components:
 docker-compose up demo-app
 
 # Run just Selenium Grid
-docker-compose up selenium-hub chrome-node
+docker-compose up selenium-hub edge-node
 
 # Run tests against running app
 docker-compose --profile testing up demo-tests
@@ -80,7 +80,7 @@ docker-compose --profile testing up --build
 
 ## Key Points for Your Colleague
 
-1. **Chrome DevTools Protocol** is the official way to control browser behavior
+1. **Chrome DevTools Protocol** is the official way to control browser behavior (works with Edge too!)
 2. **No OS-level timezone changes** needed on Selenium nodes
 3. **Better test coverage** - can test multiple timezones easily
 4. **Production-ready** - this approach is used by major companies
@@ -89,11 +89,11 @@ docker-compose --profile testing up --build
 
 This demo successfully demonstrates:
 
-✅ **Chrome DevTools Protocol works perfectly** for timezone override  
+✅ **Chrome DevTools Protocol works perfectly** for timezone override in Edge browser  
 ✅ **No infrastructure changes needed** - timezone is set in test code  
 ✅ **Multiple timezones work** - Europe/Rome, America/New_York, Asia/Tokyo all working  
 ✅ **Real timezone behavior** - proper offsets and time conversion  
-✅ **Selenium Grid compatibility** - works with containerized Selenium  
+✅ **Selenium Grid compatibility** - works with containerized Selenium and Edge  
 
 ### Actual Test Results
 
@@ -138,9 +138,9 @@ The tests show real timezone functionality working perfectly:
 
 ## Files Included
 
-- `docker-compose.yml` - Complete Selenium Grid + Demo App setup
+- `docker-compose.yml` - Complete Selenium Grid + Demo App setup (with Edge)
 - `demo-app/` - Simple web app that shows timezone behavior
-- `tests/` - Selenium tests demonstrating correct timezone handling
-- `driver-manager.js` - Reusable class for timezone configuration
+- `tests/` - Selenium tests demonstrating correct timezone handling with Edge
+- `driver-manager.js` - Reusable class for timezone configuration in Edge
 
 This proves that timezone testing should be handled in test code, not infrastructure configuration.

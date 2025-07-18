@@ -1,9 +1,9 @@
 const { Builder, By, until } = require('selenium-webdriver');
-const chrome = require('selenium-webdriver/chrome');
+const edge = require('selenium-webdriver/edge');
 
 class DriverManager {
     static async createDriver(timezone = null, useGrid = true) {
-        const options = new chrome.Options();
+        const options = new edge.Options();
         
         // Configure for headless operation (good for CI/CD)
         options.addArguments('--headless');
@@ -12,14 +12,14 @@ class DriverManager {
         options.addArguments('--disable-gpu');
         options.addArguments('--window-size=1920,1080');
         
-        const builder = new Builder().forBrowser('chrome');
+        const builder = new Builder().forBrowser('MicrosoftEdge');
         
         if (useGrid) {
             const hubUrl = process.env.SELENIUM_HUB_URL || 'http://localhost:4444/wd/hub';
             builder.usingServer(hubUrl);
         }
         
-        const driver = await builder.setChromeOptions(options).build();
+        const driver = await builder.setEdgeOptions(options).build();
         
         // Set timezone if specified
         if (timezone) {
@@ -31,7 +31,7 @@ class DriverManager {
     
     static async setTimezone(driver, timezone) {
         try {
-            // Method 1: Using CDP (Chrome DevTools Protocol)
+            // Method 1: Using CDP (Chrome DevTools Protocol - also works with Edge)
             await driver.sendAndGetDevToolsCommand('Emulation.setTimezoneOverride', {
                 timezoneId: timezone
             });

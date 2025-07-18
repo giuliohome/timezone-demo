@@ -10,8 +10,8 @@ services:
       - GRID_BROWSER_TIMEOUT=300
       - GRID_TIMEOUT=300
 
-  chrome-node:
-    image: selenium/node-chrome:4.15.0
+  edge-node:
+    image: selenium/node-edge:4.15.0
     depends_on:
       - selenium-hub
     environment:
@@ -42,7 +42,7 @@ services:
     build: .
     depends_on:
       - selenium-hub
-      - chrome-node
+      - edge-node
       - demo-app
     environment:
       - SELENIUM_HUB_URL=http://selenium-hub:4444/wd/hub
