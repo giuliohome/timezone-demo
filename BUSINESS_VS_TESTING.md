@@ -1,53 +1,36 @@
-# Browser Timezone Requirements: Business Need vs Testing Approach
+# Business vs Testing: Timezone Requirements
 
-## 🤔 The Critical Question
+## The Key Question
 
-**"What if the goal is to make the browser show Rome timezone?"**
+**"Do you need to change browser timezone for business logic, or just for testing?"**
 
-This question reveals the fundamental distinction between:
-1. **Business requirements** (your app needs browser timezone changes)
-2. **Testing approaches** (you're trying to test timezone handling)
+## Two Different Scenarios
 
-## 📊 Decision Matrix
+### Scenario A: Business Requirement
+Your application **actually needs** different browser timezones:
+- Hotel booking system showing local hotel times
+- Financial trading platform with market-specific times
+- Global scheduling where browser timezone affects functionality
 
-### Scenario A: Browser Timezone Change is a BUSINESS REQUIREMENT
+**Solution**: Infrastructure-level timezone setup (Docker containers with different TZ values)
 
-**Example Use Cases:**
-- Hotel booking system where users must see local hotel times
-- Financial trading platform requiring market-specific timezones  
-- Global conference scheduling where browser timezone affects booking slots
-- Embedded widgets that depend on browser timezone
+### Scenario B: Testing Requirement  
+You want to **test how your app handles** different timezones:
+- Verify date formatting works correctly
+- Test timezone conversion logic
+- Ensure UI displays proper local times
 
-**If this is your case:**
+**Solution**: Application-level testing (mock data, dependency injection, test utilities)
 
-```javascript
-// ✅ LEGITIMATE: Browser timezone IS the business requirement
-test('Hotel booking shows local time', async () => {
-    // This test is REQUIRED because your business logic depends on browser timezone
-    await setBrowserTimezone('Europe/Rome');
-    await bookHotel('rome-grand-hotel');
-    
-    const checkInTime = await getDisplayedCheckInTime();
-    expect(checkInTime).toBe('14:00 CET'); // Browser timezone affects business logic
-});
-```
+## Recommendation
 
-**Production Solutions for Browser Timezone Requirements:**
+Most applications fall into **Scenario B**. Instead of manipulating browser timezones:
+1. Test your timezone conversion logic directly
+2. Use dependency injection for time services
+3. Mock time at application boundaries
+4. Test with known timezone data
 
-1. **Infrastructure Approach** (Most Reliable)
-   ```yaml
-   # docker-compose.yml
-   selenium-node-rome:
-     image: selenium/node-edge:4.15.0
-     environment:
-       - TZ=Europe/Rome
-       - SE_NODE_HOST=selenium-node-rome
-   
-   selenium-node-ny:
-     image: selenium/node-edge:4.15.0
-     environment:
-       - TZ=America/New_York
-       - SE_NODE_HOST=selenium-node-ny
+This approach is more reliable, maintainable, and production-ready.
    ```
 
 2. **Browser Launch Arguments** (Limited Success)

@@ -1,103 +1,45 @@
-# Timezone Demo - Production-Ready Edge Timezone Testing Solution
+# Timezone Demo - Edge Browser Timezone Testing
 
-This demo provides a **production-ready solution** for timezone testing in Selenium using Microsoft Edge browser, proving that timezone handling should be done in test code, not infrastructure configuration.
+A simple demonstration of timezone testing in Selenium using Microsoft Edge browser with JavaScript injection fallback.
 
-## 🎯 Core Achievement: 100% Test Success Rate
+## Overview
 
-**✅ All 5 tests passing consistently** - Demonstrates robust, production-ready timezone override functionality
+This demo shows how to test timezone handling in web applications using:
+- Standard CDP (Chrome DevTools Protocol) when available
+- JavaScript injection as a reliable fallback
+- Clean test isolation and timezone switching
 
-## 🏆 Why This Approach is Superior
-
-1. **No infrastructure changes needed** - No environment variables on Selenium Grid nodes
-2. **Test isolation** - Each test can use different timezones independently  
-3. **Flexible** - Test multiple timezones in the same test suite
-4. **Maintainable** - Timezone logic stays in test code where it belongs
-5. **Production-ready** - Reliable Enhanced JavaScript injection with 100% success rate
-
-## 🔧 Technical Implementation
-
-### Multi-Layer Approach
-1. **CDP (Chrome DevTools Protocol)** - Primary method when debugging port is accessible
-2. **WebSocket CDP** - Complete implementation for Edge debugging port 9222 (ready for environments with proper networking)
-3. **Enhanced JavaScript Injection** - Production fallback with 100% reliability (currently active)
-
-### Enhanced Edge Support
-- **Complete WebSocket CDP framework** - Fully implemented and ready
-- **Edge-specific debugging port detection** - Automatic discovery of port 9222
-- **Comprehensive JavaScript overrides** - Intl.DateTimeFormat, Date.prototype methods, and DOM updates
-- **Robust fallback mechanism** - Graceful degradation ensuring consistent behavior
-
-## 🚀 Service Architecture
-
-The demo uses a clean microservices approach:
-
-- **`demo-app`** - Web application demonstrating timezone behavior (port 3000)
-- **`demo-tests`** - Selenium test suite with comprehensive timezone testing
-- **`selenium-hub`** - Selenium Grid 4.15.0 hub
-- **`edge-node`** - Microsoft Edge browser node with debugging capabilities
-
-## 📋 Running the Production Demo
-
-### Prerequisites
-- Docker and Docker Compose
-- Windows Docker Desktop (or Linux with Docker)
-
-### Quick Start
+## Quick Start
 
 ```cmd
-# Start all services
+# Start services
 docker-compose up --build
 
-# Or run in detached mode for cleaner test output
+# Run tests only
 docker-compose up -d selenium-hub edge-node demo-app && docker-compose up demo-tests
 ```
 
-## 📊 Test Coverage & Results
+## Test Results
 
-**🎯 Current Status: 5/5 tests passing (100% success rate)**
+The test suite includes:
+1. Default timezone behavior
+2. Rome timezone override (Europe/Rome)
+3. New York timezone override (America/New_York)  
+4. Multiple timezone comparison
+5. Date formatting verification
 
-The comprehensive test suite demonstrates:
-1. **Default timezone behavior** - Verifies initial browser timezone  
-2. **Rome timezone** - Sets and validates Europe/Rome timezone
-3. **New York timezone** - Sets and validates America/New_York timezone  
-4. **Tokyo timezone** - Sets and validates Asia/Tokyo timezone
-5. **Multiple timezone changes** - Verifies seamless timezone transitions in single test
+## Implementation
 
-## 🔍 Implementation Deep Dive
+### Driver Manager (`tests/driver-manager.js`)
+Simple two-tier approach:
+1. **Standard CDP** - Try native timezone override first
+2. **JavaScript injection** - Reliable fallback that overrides browser APIs
 
-### Enhanced Driver Manager (`tests/driver-manager.js`)
-Production-ready timezone override with three-tier approach:
+### Demo Application (`demo-app/`)
+Basic Express.js server with timezone-aware frontend for testing.
 
-1. **Primary CDP Method** (when debugging port accessible):
-   ```javascript
-   await driver.executeCdpCommand('Emulation.setTimezoneOverride', {
-       timezoneId: timezone
-   });
-   ```
-
-2. **WebSocket CDP Framework** (complete implementation ready):
-   ```javascript
-   const ws = new WebSocket('ws://localhost:9222/devtools/browser');
-   ws.send(JSON.stringify({
-       id: 1,
-       method: 'Emulation.setTimezoneOverride',
-       params: { timezoneId: timezone }
-   }));
-   ```
-
-3. **Enhanced JavaScript Injection** (current production method - 100% reliable):
-   ```javascript
-   // Comprehensive API overrides:
-   // ✅ Intl.DateTimeFormat with timezone awareness
-   // ✅ Date.prototype methods with proper calculations
-   // ✅ DOM content updates for immediate visibility
-   // ✅ Complete timezone context preservation
-   ```
-
-### Demo Application (`demo-app/server.js`)
-Lightweight Express.js server serving timezone-aware frontend. Server remains timezone-agnostic - all timezone behavior controlled by browser.
-
-### Test Architecture (`tests/timezone.test.js`)
+### Test Suite (`tests/timezone.test.js`)
+Clean, focused tests that verify timezone behavior without complex infrastructure setup.
 Comprehensive validation suite ensuring:
 - ✅ Default timezone detection accuracy
 - ✅ Specific timezone setting reliability  
@@ -156,33 +98,9 @@ This solution is **immediately deployable** in production environments with:
 
 ✅ **All tests now passing successfully!** ✅
 
-## Troubleshooting
+## Files
 
-### Common Issues and Solutions
-
-1. **"SE_EVENT_BUS_HOST not set" error**:
-   - Run `docker-compose down --rmi all` to remove cached images
-   - Ensure you're using the updated `docker-compose.yml` with event bus configuration
-
-2. **Tests timing out**:
-   - Make sure Selenium Grid is fully started before running tests
-   - The demo waits 15 seconds for Grid to be ready
-
-3. **"bash not found" error**:
-   - Ensure `docker-compose.yml` uses `sh -c` instead of `bash -c` for Alpine Linux
-
-4. **Docker Compose version warning**:
-   - Remove the `version:` line from `docker-compose.yml` (it's obsolete in newer versions)
-
-5. **Tests not running**:
-   - Use `--profile testing` to include test services
-   - Make sure the demo app is running first: `docker-compose up demo-app`
-
-## Files Included
-
-- `docker-compose.yml` - Complete Selenium Grid + Demo App setup (with Edge)
-- `demo-app/` - Simple web app that shows timezone behavior
-- `tests/` - Selenium tests demonstrating correct timezone handling with Edge
-- `driver-manager.js` - Reusable class for timezone configuration in Edge
-
-This proves that timezone testing should be handled in test code, not infrastructure configuration.
+- `docker-compose.yml` - Selenium Grid setup with Edge browser
+- `demo-app/` - Simple web app for timezone testing
+- `tests/driver-manager.js` - Timezone override utilities
+- `tests/timezone.test.js` - Test suite
